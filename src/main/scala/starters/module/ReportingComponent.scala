@@ -6,7 +6,7 @@ import com.github.tototoshi.csv._
 import java.io.File
 
 case class ResultRecord(countyCode: String, companyCode: String, pre2008Count: Int, count2008: Int, count2009: Int, count2010: Int, count2011: Int, count2012: Int, count2013: Int, count2014: Int, count2015: Int, count2016: Int, count2017: Int, count2018: Int) {
-  /* Ability to filter on the total */
+  /* Calculate total for purposes of filtering */
   def total = pre2008Count + count2008 + count2009 + count2010 + count2011 + count2012 + count2013 + count2014 + count2015 + count2016 + count2017 + count2018
 }
 
@@ -48,9 +48,7 @@ trait ReportingComponent extends LazyLogging {
     val writer = CSVWriter.open(f)
 
     /* Filter out entries that do not have any results */
-    val res = results filter (_.total > 0)
-
-    res map (x => {
+    results filter (_.total > 0) map (x => {
       writer.writeRow(
         List(
           x.countyCode,
